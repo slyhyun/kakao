@@ -5,6 +5,9 @@ on:
     branches:
       - main # main 브랜치에 푸시될 때 배포 실행
 
+permissions:
+  contents: write
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
