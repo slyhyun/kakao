@@ -4,6 +4,8 @@ import axios from "axios";
 import Header from "../components/Header";
 import Loading from "../components/Loading";
 
+const TMDB_API_KEY = process.env.REACT_APP_TMDB_API_KEY;
+
 const Container = styled.div`
     width: 100%;
     margin: 0;
@@ -196,9 +198,8 @@ const Popular = () => {
     }, [view]);
 
     const fetchMoviesForTable = async () => {
-        const password = localStorage.getItem("password");
-        if (!password) {
-            console.error("로그인이 필요합니다.");
+        if (!TMDB_API_KEY) {
+            console.error("API KEY가 필요합니다.");
             return;
         }
 
@@ -207,7 +208,7 @@ const Popular = () => {
             const allMovies = [];
             for (let page = 1; page <= 50; page++) {
                 const response = await axios.get(
-                    `https://api.themoviedb.org/3/movie/popular?api_key=${password}&language=ko-KR&page=${page}`
+                    `https://api.themoviedb.org/3/movie/popular?api_key=${TMDB_API_KEY}&language=ko-KR&page=${page}`
                 );
                 allMovies.push(
                     ...response.data.results.map((movie, index) => ({
@@ -225,16 +226,15 @@ const Popular = () => {
     };
 
     const fetchMoviesForScroll = useCallback(async () => {
-        const password = localStorage.getItem("password");
-        if (!password) {
-            console.error("로그인이 필요합니다.");
+        if (!TMDB_API_KEY) {
+            console.error("API KEY가가 필요합니다.");
             return;
         }
 
         try {
             setScrollLoading(true); 
             const response = await axios.get(
-                `https://api.themoviedb.org/3/movie/popular?api_key=${password}&language=ko-KR&page=${scrollPage}`
+                `https://api.themoviedb.org/3/movie/popular?api_key=${TMDB_API_KEY}&language=ko-KR&page=${scrollPage}`
             );
             setMovies((prev) => ({
                 ...prev,

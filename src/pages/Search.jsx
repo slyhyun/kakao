@@ -4,6 +4,8 @@ import axios from "axios";
 import Header from "../components/Header";
 import Loading from "../components/Loading";
 
+const TMDB_API_KEY = process.env.REACT_APP_TMDB_API_KEY;
+
 const Container = styled.div`
     width: 100%;
     margin: 0;
@@ -186,12 +188,10 @@ const Search = () => {
     const [searchHistory, setSearchHistory] = useState([]);
     const [showDropdown, setShowDropdown] = useState(false);
 
-    const API_KEY = localStorage.getItem("password");
-
     const fetchFilteredMovies = useCallback(
         async (reset = false) => {
-            if (!API_KEY) {
-                console.error("API Key가 필요합니다.");
+            if (!TMDB_API_KEY) {
+                console.error("API KEY가 필요합니다.");
                 return;
             }
 
@@ -211,7 +211,7 @@ const Search = () => {
                     : `https://api.themoviedb.org/3/discover/movie`;
 
                 const response = await axios.get(
-                    `${apiEndpoint}?api_key=${API_KEY}&language=ko-KR&page=${currentPage}${genreFilter}${ratingFilter}${sortFilter}${queryFilter}`
+                    `${apiEndpoint}?api_key=${TMDB_API_KEY}&language=ko-KR&page=${currentPage}${genreFilter}${ratingFilter}${sortFilter}${queryFilter}`
                 );
 
                 setMovies((prevMovies) =>
@@ -224,7 +224,7 @@ const Search = () => {
                 setLoading(false);
             }
         },
-        [API_KEY, filters, currentPage] // 정확한 종속성 배열 설정
+        [TMDB_API_KEY, filters, currentPage] // 정확한 종속성 배열 설정
     );
 
     const handleScroll = useCallback(() => {
