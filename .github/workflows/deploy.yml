@@ -28,8 +28,8 @@ jobs:
       run: npm install
 
     # 4. 빌드 실행
-    - name: Build project
-      run: npm run build
+    - name: Build project with .env-prod
+      run: npx env-cmd -f .env-prod react-scripts build
 
     # 5. GitHub Pages로 배포
     - name: Deploy to GitHub Pages
