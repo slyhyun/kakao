@@ -132,17 +132,26 @@ const Menu = ({ handleLogout, onClose, isOpen }) => {
 
     // ✅ 카카오 로그아웃
     const handleKakaoLogout = () => {
-        if (window.Kakao && window.Kakao.Auth.getAccessToken()) {
-            window.Kakao.Auth.logout(() => {
-                toast.success("카카오 로그아웃 완료");
-                localStorage.clear();
-                setUsername("");
-                navigate("/signin");
-            });
+        if (window.Kakao && window.Kakao.Auth) {
+            if (window.Kakao.Auth.getAccessToken()) {
+                // ✅ 카카오 로그아웃
+                window.Kakao.Auth.logout(() => {
+                    toast.success("카카오 로그아웃 완료");
+                    localStorage.clear(); // 모든 로컬 스토리지 초기화
+                    setUsername(""); // 사용자 이름 상태 초기화
+                    navigate("/signin"); // 로그인 페이지로 이동
+                });
+            } else {
+                toast.info("이미 로그아웃 상태입니다.");
+                localStorage.clear(); // 모든 로컬 스토리지 초기화
+                setUsername(""); // 사용자 이름 상태 초기화
+                navigate("/signin"); // 로그인 페이지로 이동
+            }
         } else {
-            localStorage.clear();
-            setUsername("");
-            navigate("/signin");
+            toast.error("Kakao SDK가 초기화되지 않았습니다.");
+            localStorage.clear(); // 모든 로컬 스토리지 초기화
+            setUsername(""); // 사용자 이름 상태 초기화
+            navigate("/signin"); // 로그인 페이지로 이동
         }
     };
 
