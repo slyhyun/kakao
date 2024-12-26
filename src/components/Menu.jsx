@@ -3,7 +3,9 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { BiSolidCameraMovie } from "react-icons/bi";
 import { GrLogout } from "react-icons/gr";
+import toast from "react-hot-toast";
 
+// ✅ Styled Components
 const MenuWrapper = styled.div`
     position: fixed;
     top: 0;
@@ -102,7 +104,7 @@ const LogoutButton = styled.div`
 const UsernameDisplay = styled.span`
     color: white;
     font-size: 16px;
-    margin-top: 40px;  // 로그아웃 버튼 위의 여백
+    margin-top: 40px;
     transition: color 0.3s;
 
     &:hover {
@@ -115,12 +117,34 @@ const Menu = ({ handleLogout, onClose, isOpen }) => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const storedUsername = localStorage.getItem("username");
-        if (storedUsername) {
-            const name = storedUsername.split("@")[0];
-            setUsername(name);
+        // ✅ 사용자 이름 설정
+        const kakaoUserName = localStorage.getItem("kakaoUserName");
+        if (kakaoUserName) {
+            setUsername(kakaoUserName);
+        } else {
+            const storedUsername = localStorage.getItem("username");
+            if (storedUsername) {
+                const name = storedUsername.split("@")[0];
+                setUsername(name);
+            }
         }
     }, []);
+
+    // ✅ 카카오 로그아웃
+    const handleKakaoLogout = () => {
+        if (window.Kakao && window.Kakao.Auth.getAccessToken()) {
+            window.Kakao.Auth.logout(() => {
+                toast.success("카카오 로그아웃 완료");
+                localStorage.clear();
+                setUsername("");
+                navigate("/signin");
+            });
+        } else {
+            localStorage.clear();
+            setUsername("");
+            navigate("/signin");
+        }
+    };
 
     const handleNavigation = (path) => {
         navigate(path);
@@ -147,7 +171,7 @@ const Menu = ({ handleLogout, onClose, isOpen }) => {
                 </MenuItem>
             </MenuList>
             {username && <UsernameDisplay>{username}님</UsernameDisplay>}
-            <LogoutButton onClick={handleLogout}>
+            <LogoutButton onClick={handleKakaoLogout}>
                 <GrLogout />
                 <span>로그아웃</span>
             </LogoutButton>
