@@ -32,15 +32,28 @@ git clone https://github.com/slyhyun/kakao.git
 ### 2. 패키지 설치
 npm install
 
-### 3. 애플리케이션 실행
+### 3. 환경 변수 설정
+
+프로젝트 루트경로에 .env-dev(개발), .env-prod(배포)를 생성하고 각 환경에 맞게 아래 변수 설정
+
+REACT_APP_IP_ADDRESS = IP 주소소
+REACT_APP_PORT = 포트번호호
+REACT_APP_TMDB_API_KEY = TMDB API 키
+
+REACT_APP_KAKAO_KEY = JavaScript 키
+REACT_APP_KAKAO_API = REST API 키
+REACT_APP_KAKAO_DOMAIN = 사이트 도메인
+REACT_APP_REDIRECT_URI = Redirect URI
+
+### 4. 애플리케이션 실행
 npm start
 
 기본적으로 <http://localhost:3000>에서 실행됩니다
 
-### 4. 로그인
+### 5. 로그인
 카카오 로그인으로 로그인을 하면 됩니다.
 
-### 5. 빌드 및 배포
+### 6. 빌드 및 배포
 npm run build
 npm run deploy
 
