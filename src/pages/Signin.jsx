@@ -3,7 +3,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
-// JavaScript 키 환경 변수에서 가져오기
+// ✅ JavaScript 키 환경 변수에서 가져오기
 const KAKAO_JS_KEY = process.env.REACT_APP_KAKAO_KEY;
 
 // ✅ Kakao SDK 초기화
@@ -43,11 +43,22 @@ const fetchKakaoUserInfo = () => {
       const { id, properties, kakao_account } = res;
       const profileName = properties?.nickname || '이름 없음';
       const profileEmail = kakao_account?.email || '이메일 없음';
+      const profileImage = properties?.profile_image || '프로필 이미지 없음';
+      const ageRange = kakao_account?.age_range || '연령 정보 없음';
 
-      // 사용자 정보 저장
+      // ✅ 콘솔에 추가 정보 출력
+      console.log('📝 추가 사용자 정보:');
+      console.log('ID:', id);
+      console.log('Email:', profileEmail);
+      console.log('Profile Image:', profileImage);
+      console.log('Age Range:', ageRange);
+
+      // ✅ 사용자 정보 저장
       localStorage.setItem('kakaoUserID', id);
       localStorage.setItem('kakaoUserName', profileName);
       localStorage.setItem('kakaoUserEmail', profileEmail);
+      localStorage.setItem('kakaoUserProfileImage', profileImage);
+      localStorage.setItem('kakaoUserAgeRange', ageRange);
       localStorage.setItem('isLogin', 'true');
 
       toast.success(`${profileName}님, 환영합니다!`);
