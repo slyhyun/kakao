@@ -165,23 +165,64 @@ const Header = () => {
                 // ✅ 카카오 로그아웃
                 window.Kakao.Auth.logout(() => {
                     toast.success("카카오 로그아웃 완료");
-                    localStorage.clear(); // 모든 로컬 스토리지 초기화
+                    
+                    // ✅ searchHistory와 wishlist 유지
+                    const searchHistory = localStorage.getItem("searchHistory");
+                    const wishlist = localStorage.getItem("wishlist");
+    
+                    localStorage.clear(); // 전체 초기화
+                    
+                    // ✅ 유지할 항목 다시 저장
+                    if (searchHistory) {
+                        localStorage.setItem("searchHistory", searchHistory);
+                    }
+                    if (wishlist) {
+                        localStorage.setItem("wishlist", wishlist);
+                    }
+    
                     setUsername(""); // 사용자 이름 상태 초기화
                     navigate("/signin"); // 로그인 페이지로 이동
                 });
             } else {
                 toast.info("이미 로그아웃 상태입니다.");
-                localStorage.clear(); // 모든 로컬 스토리지 초기화
+    
+                // ✅ searchHistory와 wishlist 유지
+                const searchHistory = localStorage.getItem("searchHistory");
+                const wishlist = localStorage.getItem("wishlist");
+    
+                localStorage.clear(); // 전체 초기화
+    
+                if (searchHistory) {
+                    localStorage.setItem("searchHistory", searchHistory);
+                }
+                if (wishlist) {
+                    localStorage.setItem("wishlist", wishlist);
+                }
+    
                 setUsername(""); // 사용자 이름 상태 초기화
                 navigate("/signin"); // 로그인 페이지로 이동
             }
         } else {
             toast.error("Kakao SDK가 초기화되지 않았습니다.");
-            localStorage.clear(); // 모든 로컬 스토리지 초기화
+    
+            // ✅ searchHistory와 wishlist 유지
+            const searchHistory = localStorage.getItem("searchHistory");
+            const wishlist = localStorage.getItem("wishlist");
+    
+            localStorage.clear(); // 전체 초기화
+    
+            if (searchHistory) {
+                localStorage.setItem("searchHistory", searchHistory);
+            }
+            if (wishlist) {
+                localStorage.setItem("wishlist", wishlist);
+            }
+    
             setUsername(""); // 사용자 이름 상태 초기화
             navigate("/signin"); // 로그인 페이지로 이동
         }
     };
+    
 
     const toggleMenu = () => {
         setIsOpen((prev) => !prev);
