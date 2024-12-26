@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
 // JavaScript 키 환경 변수에서 가져오기
-const KAKAO_JS_KEY = process.env.REACT_APP_KAKAO_JS_KEY;
+const KAKAO_JS_KEY = process.env.REACT_APP_KAKAO_KEY;
 
 // ✅ Kakao SDK 초기화
 const initializeKakao = () => {

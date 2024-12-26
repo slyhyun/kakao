@@ -5,7 +5,9 @@ import { BiSolidCameraMovie } from "react-icons/bi";
 import { GiHamburgerMenu } from "react-icons/gi";
 import Menu from "./Menu";
 import styled from "styled-components";
+import toast from "react-hot-toast";
 
+// ✅ Styled Components
 const HeaderWrapper = styled.header`
     position: fixed;
     top: 0;
@@ -26,6 +28,7 @@ const Logo = styled.div`
     align-items: center;
     cursor: pointer;
     transition: background-color 0.3s, color 0.3s;
+
     .movie-icon {
         font-size: 24px;
         margin-right: 10px;
@@ -48,6 +51,7 @@ const Nav = styled.nav`
     p {
         cursor: pointer;
         transition: background-color 0.3s, color 0.3s;
+
         &:hover {
             color: #946efd;
         }
@@ -55,20 +59,20 @@ const Nav = styled.nav`
 `;
 
 const NavItem = styled.p`
-  cursor: pointer;
-  transition: background-color 0.3s, color 0.3s;
-  color: ${(props) => (props.active ? "#946efd" : "inherit")};
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    color: ${(props) => (props.active ? "#946efd" : "inherit")};
 
-  &:hover {
-    color: #946efd;
-  }
+    &:hover {
+        color: #946efd;
+    }
 `;
 
 const UserActions = styled.div`
     display: flex;
     align-items: center;
     gap: 15px;
-    margin-right: 50px; /* 컨테이너 내 여백 조정 */
+    margin-right: 50px;
 `;
 
 const LogoutButton = styled.div`
@@ -77,9 +81,11 @@ const LogoutButton = styled.div`
     cursor: pointer;
     color: white;
     transition: background-color 0.3s, color 0.3s;
+
     &:hover {
         color: red;
     }
+
     span {
         margin-left: 5px;
         font-size: 14px;
@@ -87,16 +93,15 @@ const LogoutButton = styled.div`
 `;
 
 const UsernameDisplay = styled.span`
-    color: white;  // 기본 흰색 글씨
+    color: white;
     font-size: 16px;
-    margin-right: 10px;  // 로그아웃 버튼과의 간격
-    transition: color 0.3s;  // 색상 변경 시 트랜지션 적용
+    margin-right: 10px;
+    transition: color 0.3s;
 
     &:hover {
-        color: #946efd;  // 마우스 호버 시 연보라색으로 변경
+        color: #946efd;
     }
 `;
-
 
 const HamburgerIcon = styled(GiHamburgerMenu)`
     font-size: 24px;
@@ -105,6 +110,7 @@ const HamburgerIcon = styled(GiHamburgerMenu)`
     right: 20px;
     top: 25px;
     transition: color 0.3s;
+
     &:hover {
         color: #946efd;
     }
@@ -112,7 +118,7 @@ const HamburgerIcon = styled(GiHamburgerMenu)`
 
 const Header = () => {
     const [username, setUsername] = useState("");
-    const [isOpen, setIsOpen] = useState(false); // 메뉴의 열림 상태 관리
+    const [isOpen, setIsOpen] = useState(false);
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
     const [isScrolled, setIsScrolled] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
@@ -120,16 +126,22 @@ const Header = () => {
     const location = useLocation();
 
     useEffect(() => {
-        const storedUsername = localStorage.getItem("username");
-        if (storedUsername) {
-            const name = storedUsername.split("@")[0];
-            setUsername(name);
+        // ✅ 사용자 이름 설정 (로컬 스토리지에서 가져오기)
+        const kakaoUserName = localStorage.getItem("kakaoUserName");
+        if (kakaoUserName) {
+            setUsername(kakaoUserName);
+        } else {
+            const storedUsername = localStorage.getItem("username");
+            if (storedUsername) {
+                const name = storedUsername.split("@")[0];
+                setUsername(name);
+            }
         }
 
         const handleResize = () => {
             setIsMobile(window.innerWidth <= 768);
             if (window.innerWidth > 768) {
-                setIsOpen(false); // 데스크톱에서는 메뉴 닫기
+                setIsOpen(false);
             }
         };
 
@@ -146,10 +158,20 @@ const Header = () => {
         };
     }, []);
 
+    // ✅ 카카오 로그아웃
     const handleLogout = () => {
-        localStorage.removeItem("isLogin"); // isLogin 제거
-        localStorage.removeItem("searchHistory")
-        navigate("/signin");
+        if (window.Kakao && window.Kakao.Auth.getAccessToken()) {
+            window.Kakao.Auth.logout(() => {
+                toast.success("카카오 로그아웃 완료");
+                localStorage.clear();
+                setUsername("");
+                navigate("/signin");
+            });
+        } else {
+            localStorage.clear();
+            setUsername("");
+            navigate("/signin");
+        }
     };
 
     const toggleMenu = () => {
@@ -179,28 +201,16 @@ const Header = () => {
 
             {!isMobile && (
                 <Nav>
-                    <NavItem
-                        onClick={() => navigateTo("/")}
-                        active={location.pathname === "/"}
-                    >
+                    <NavItem onClick={() => navigateTo("/")} active={location.pathname === "/"}>
                         홈
                     </NavItem>
-                    <NavItem
-                        onClick={() => navigateTo("/popular")}
-                        active={location.pathname === "/popular"}
-                    >
+                    <NavItem onClick={() => navigateTo("/popular")} active={location.pathname === "/popular"}>
                         인기
                     </NavItem>
-                    <NavItem
-                        onClick={() => navigateTo("/search")}
-                        active={location.pathname === "/search"}
-                    >
+                    <NavItem onClick={() => navigateTo("/search")} active={location.pathname === "/search"}>
                         찾기
                     </NavItem>
-                    <NavItem
-                        onClick={() => navigateTo("/wishlist")}
-                        active={location.pathname === "/wishlist"}
-                    >
+                    <NavItem onClick={() => navigateTo("/wishlist")} active={location.pathname === "/wishlist"}>
                         위시리스트
                     </NavItem>
                 </Nav>
@@ -219,11 +229,7 @@ const Header = () => {
             {isMobile && <HamburgerIcon onClick={toggleMenu} />}
 
             {isMobile && (
-                <Menu
-                    isOpen={isOpen}
-                    handleLogout={handleLogout}
-                    onClose={closeMenu}
-                />
+                <Menu isOpen={isOpen} handleLogout={handleLogout} onClose={closeMenu} />
             )}
         </HeaderWrapper>
     );
